@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitive Intelligence Scanner - Free Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(74, 144, 226, 0.1) 0%, transparent 70%),
+                radial-gradient(circle at 75% 75%, rgba(52, 152, 219, 0.1) 0%, transparent 70%),
+                radial-gradient(circle at 50% 50%, rgba(41, 128, 185, 0.05) 0%, transparent 70%);
+            animation: pulseBackground 6s ease-in-out infinite;
+        }
+
+        @keyframes pulseBackground {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 900px;
+            padding: 40px 20px;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3, #fd79a8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #bdc3c7;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            transform: translateY(30px);
+        }
+
+        .scanner-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .scan-form {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .input-group {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #74b9ff;
+            box-shadow: 0 0 20px rgba(116, 185, 255, 0.3);
+        }
+
+        .input-group label {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #1a1a2e;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            color: #74b9ff;
+            border-radius: 5px;
+        }
+
+        .scan-button {
+            background: linear-gradient(135deg, #e17055, #d63031);
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .scan-button:hover::before {
+            left: 100%;
+        }
+
+        .scan-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(230, 112, 85, 0.4);
+        }
+
+        .scanning-animation {
+            display: none;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .scanner-line {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .scanner-beam {
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #74b9ff, transparent);
+            animation: scannerMove 2s linear infinite;
+        }
+
+        @keyframes scannerMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+
+        .results-dashboard {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #74b9ff, #fd79a8, #fdcb6e);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #74b9ff, #fd79a8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            font-size: 1.1rem;
+            color: #bdc3c7;
+            margin-bottom: 15px;
+        }
+
+        .metric-insight {
+            font-size: 0.9rem;
+            color: #74b9ff;
+            font-style: italic;
+        }
+
+        .competitive-matrix {
+            display: none;
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .matrix-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #74b9ff;
+        }
+
+        .competitor-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .competitor-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+            border-left: 4px solid;
+        }
+
+        .competitor-card.you {
+            border-left-color: #00b894;
+        }
+
+        .competitor-card.competitor {
+            border-left-color: #fd79a8;
+        }
+
+        .competitor-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .strength-bars {
+            margin: 15px 0;
+        }
+
+        .strength-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .strength-bar {
+            width: 60%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #74b9ff, #fd79a8);
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+
+        .threat-alerts {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 12px;
+        }
+
+        .alert-title {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .threat-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(231, 76, 60, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #e74c3c;
+        }
+
+        .opportunities {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            border-radius: 12px;
+        }
+
+        .opportunity-title {
+            font-size: 1.5rem;
+            color: #27ae60;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .opportunity-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(39, 174, 96, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #27ae60;
+        }
+
+        .cta-section {
+            margin-top: 50px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #74b9ff;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            border: none;
+            padding: 20px 50px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 184, 148, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .scan-form {
+                flex-direction: column;
+            }
+            .results-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">AI Competitive Intelligence Scanner</h1>
+            <p class="hero-subtitle">Discover what your competitors don't want you to know in 30 seconds</p>
+            
+            <div class="scanner-container">
+                <form class="scan-form" id="scanForm">
+                    <div class="input-group">
+                        <label>Your Company</label>
+                        <input type="text" id="companyName" placeholder="Enter your company name" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Industry</label>
+                        <select id="industry" required>
+                            <option value="">Select Industry</option>
+                            <option value="saas">SaaS & Technology</option>
+                            <option value="ecommerce">E-commerce</option>
+                            <option value="finance">Financial Services</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="consulting">Consulting</option>
+                            <option value="manufacturing">Manufacturing</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Revenue Range</label>
+                        <select id="revenue" required>
+                            <option value="">Select Range</option>
+                            <option value="startup">Under $1M</option>
+                            <option value="growth">$1M - $10M</option>
+                            <option value="scale">$10M - $50M</option>
+                            <option value="enterprise">$50M+</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="scan-button">
+                        🔍 SCAN COMPETITORS
+                    </button>
+                </form>
+                
+                <div class="scanning-animation" id="scanningAnimation">
+                    <h3>Scanning competitive landscape...</h3>
+                    <div class="scanner-line">
+                        <div class="scanner-beam"></div>
+                    </div>
+                    <p id="scanningStatus">Analyzing market positioning...</p>
+                </div>
+                
+                <div class="results-dashboard" id="resultsDashboard">
+                    <!-- Results will be populated here -->
+                </div>
+                
+                <div class="competitive-matrix" id="competitiveMatrix">
+                    <h3 class="matrix-title">Competitive Strength Analysis</h3>
+                    <div class="competitor-comparison" id="competitorComparison">
+                        <!-- Competitor comparison will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="threat-alerts" id="threatAlerts">
+                    <h4 class="alert-title">⚠️ Competitive Threats Detected</h4>
+                    <div id="threatsList"></div>
+                </div>
+                
+                <div class="opportunities" id="opportunities">
+                    <h4 class="opportunity-title">💡 Growth Opportunities Identified</h4>
+                    <div id="opportunitiesList"></div>
+                </div>
+                
+                <div class="cta-section" style="display: none;" id="ctaSection">
+                    <h3 class="cta-title">Ready to Dominate Your Competition?</h3>
+                    <p style="margin-bottom: 30px; font-size: 1.2rem; color: #bdc3c7;">Get the complete competitive intelligence report + AI automation strategy</p>
+                    <button class="cta-button" onclick="showUpgradeModal()">
+                        GET FULL ANALYSIS
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const competitiveData = {
+            saas: {
+                metrics: {
+                    marketSize: "$240B",
+                    growth: "23%",
+                    competitors: 47000,
+                    avgDeal: "$47K",
+                    churnRate: "8.2%"
+                },
+                competitors: [
+                    { name: "Market Leader", marketShare: 22, growth: 15, automation: 95, threat: "high" },
+                    { name: "Fast Grower", marketShare: 8, growth: 67, automation: 78, threat: "medium" },
+                    { name: "Enterprise Player", marketShare: 15, growth: 12, automation: 89, threat: "high" }
+                ],
+                threats: [
+                    "3 competitors launched AI features in the last 6 months",
+                    "Average customer acquisition cost increased 34% industry-wide",
+                    "Market leader expanding internationally with $50M funding round"
+                ],
+                opportunities: [
+                    "67% of companies still use manual processes - massive automation opportunity",
+                    "Only 23% have implemented AI - early mover advantage available",
+                    "Small business segment growing 45% YoY but underserved"
+                ]
+            },
+            ecommerce: {
+                metrics: {
+                    marketSize: "$870B",
+                    growth: "19%",
+                    competitors: 156000,
+                    avgOrder: "$127",
+                    churnRate: "22%"
+                },
+                competitors: [
+                    { name: "Platform Giant", marketShare: 35, growth: 18, automation: 92, threat: "critical" },
+                    { name: "Niche Leader", marketShare: 12, growth: 43, automation: 71, threat: "high" },
+                    { name: "Direct Competitor", marketShare: 6, growth: 28, automation: 55, threat: "medium" }
+                ],
+                threats: [
+                    "Platform fees increased 15% - squeezing margins across industry",
+                    "Social commerce growing 78% YoY - traditional e-commerce losing share",
+                    "AI-powered personalization becoming standard - non-adopters losing 23% revenue"
+                ],
+                opportunities: [
+                    "Voice commerce adoption only 12% - massive untapped market",
+                    "Subscription models seeing 3x higher lifetime value",
+                    "Cross-border e-commerce regulations simplified - international expansion easier"
+                ]
+            },
+            finance: {
+                metrics: {
+                    marketSize: "$520B",
+                    growth: "12%",
+                    competitors: 28000,
+                    avgDeal: "$125K",
+                    churnRate: "4.1%"
+                },
+                competitors: [
+                    { name: "Traditional Bank", marketShare: 45, growth: 3, automation: 67, threat: "low" },
+                    { name: "Fintech Disruptor", marketShare: 8, growth: 89, automation: 95, threat: "critical" },
+                    { name: "Regional Player", marketShare: 18, growth: 15, automation: 78, threat: "medium" }
+                ],
+                threats: [
+                    "Regulatory changes favor large institutions - compliance costs rising",
+                    "Fintech companies raising $2.3B quarterly - heavy competition for talent",
+                    "Open banking APIs enabling new entrants to capture customer relationships"
+                ],
+                opportunities: [
+                    "SMB lending still 67% manual - automation could capture significant share",
+                    "Crypto integration demanded by 34% of clients but only 8% offer it",
+                    "AI fraud detection reducing losses by 40% - competitive advantage for early adopters"
+                ]
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('scanForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                startCompetitiveScan();
+            });
+        });
+
+        function startCompetitiveScan() {
+            const form = document.getElementById('scanForm');
+            const animation = document.getElementById('scanningAnimation');
+            const results = document.getElementById('resultsDashboard');
+            
+            // Hide form and show scanning animation
+            form.style.display = 'none';
+            animation.style.display = 'block';
+            
+            const scanningSteps = [
+                "Analyzing market positioning...",
+                "Scanning competitor pricing strategies...",
+                "Evaluating digital presence strength...",
+                "Detecting automation gaps...",
+                "Calculating competitive threats...",
+                "Identifying growth opportunities...",
+                "Generating intelligence report..."
+            ];
+            
+            let stepIndex = 0;
+            const scanningInterval = setInterval(() => {
+                document.getElementById('scanningStatus').textContent = scanningSteps[stepIndex];
+                stepIndex++;
+                
+                if (stepIndex >= scanningSteps.length) {
+                    clearInterval(scanningInterval);
+                    setTimeout(() => {
+                        showResults();
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        function showResults() {
+            const industry = document.getElementById('industry').value;
+            const companyName = document.getElementById('companyName').value;
+            const data = competitiveData[industry] || competitiveData['saas'];
+            
+            document.getElementById('scanningAnimation').style.display = 'none';
+            
+            // Show dashboard metrics
+            showDashboardMetrics(data.metrics);
+            
+            // Show competitive matrix
+            setTimeout(() => showCompetitiveMatrix(data.competitors, companyName), 1000);
+            
+            // Show threats
+            setTimeout(() => showThreats(data.threats), 2000);
+            
+            // Show opportunities
+            setTimeout(() => showOpportunities(data.opportunities), 3000);
+            
+            // Show CTA
+            setTimeout(() => {
+                document.getElementById('ctaSection').style.display = 'block';
+                document.getElementById('ctaSection').scrollIntoView({ behavior: 'smooth' });
+            }, 4000);
+        }
+
+        function showDashboardMetrics(metrics) {
+            const dashboard = document.getElementById('resultsDashboard');
+            dashboard.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.marketSize}</div>
+                    <div class="metric-label">Total Market Size</div>
+                    <div class="metric-insight">Growing ${metrics.growth} annually</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.competitors.toLocaleString()}</div>
+                    <div class="metric-label">Active Competitors</div>
+                    <div class="metric-insight">You're competing against thousands</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.avgDeal}</div>
+                    <div class="metric-label">Average Deal Size</div>
+                    <div class="metric-insight">Industry benchmark</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.churnRate}</div>
+                    <div class="metric-label">Average Churn Rate</div>
+                    <div class="metric-insight">Customer retention challenge</div>
+                </div>
+            `;
+            dashboard.style.display = 'grid';
+        }
+
+        function showCompetitiveMatrix(competitors, companyName) {
+            const matrix = document.getElementById('competitiveMatrix');
+            const comparison = document.getElementById('competitorComparison');
+            
+            let html = `
+                <div class="competitor-card you">
+                    <div class="competitor-name">${companyName} (You)</div>
+                    <div class="strength-bars">
+                        <div class="strength-item">
+                            <span>Market Share</span>
+                            <div class="strength-bar"><div class="strength-fill" style="width: 12%;"></div></div>
+                        </div>
+                        <div class="strength-item">
+                            <span>Growth Rate</span>
+                            <div class="strength-bar"><div class="strength-fill" style="width: 35%;"></div></div>
+                        </div>
+                        <div class="strength-item">
+                            <span>Automation</span>
+                            <div class="strength-bar"><div class="strength-fill" style="width: 25%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            competitors.forEach(comp => {
+                const threatColor = comp.threat === 'critical' ? '#e74c3c' : 
+                                  comp.threat === 'high' ? '#f39c12' : '#27ae60';
+                html += `
+                    <div class="competitor-card competitor" style="border-left-color: ${threatColor};">
+                        <div class="competitor-name">${comp.name}</div>
+                        <div class="strength-bars">
+                            <div class="strength-item">
+                                <span>Market Share</span>
+                                <div class="strength-bar"><div class="strength-fill" style="width: ${comp.marketShare}%;"></div></div>
+                            </div>
+                            <div class="strength-item">
+                                <span>Growth Rate</span>
+                                <div class="strength-bar"><div class="strength-fill" style="width: ${Math.min(comp.growth, 100)}%;"></div></div>
+                            </div>
+                            <div class="strength-item">
+                                <span>Automation</span>
+                                <div class="strength-bar"><div class="strength-fill" style="width: ${comp.automation}%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            comparison.innerHTML = html;
+            matrix.style.display = 'block';
+        }
+
+        function showThreats(threats) {
+            const threatSection = document.getElementById('threatAlerts');
+            const threatsList = document.getElementById('threatsList');
+            
+            threatsList.innerHTML = threats.map(threat => `
+                <div class="threat-item">
+                    <strong>⚠️ Critical:</strong> ${threat}
+                </div>
+            `).join('');
+            
+            threatSection.style.display = 'block';
+        }
+
+        function showOpportunities(opportunities) {
+            const oppSection = document.getElementById('opportunities');
+            const oppsList = document.getElementById('opportunitiesList');
+            
+            oppsList.innerHTML = opportunities.map(opp => `
+                <div class="opportunity-item">
+                    <strong>💡 Opportunity:</strong> ${opp}
+                </div>
+            `).join('');
+            
+            oppSection.style.display = 'block';
+        }
+
+        function showUpgradeModal() {
+            alert(`🚀 UNLOCK FULL COMPETITIVE INTELLIGENCE REPORT\n\n✅ Complete competitor analysis (50+ companies)\n✅ Real-time pricing intelligence\n✅ AI automation gap analysis\n✅ 90-day competitive strategy roadmap\n✅ Custom market positioning report\n✅ Priority support + strategy session\n\nContact us now to dominate your competition!`);
+        }
+    </script>
+</body>
+</html>
