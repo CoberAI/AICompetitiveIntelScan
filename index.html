@@ -178,25 +178,25 @@
         }
 
         .reset-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 30px;
-            border-radius: 12px;
-            color: #bdc3c7;
-            font-size: 1rem;
-            font-weight: 600;
+            background: linear-gradient(135deg, #fd79a8, #e84393) !important;
+            border: none !important;
+            padding: 20px 50px !important;
+            border-radius: 50px !important;
+            color: white !important;
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px !important;
             margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
         }
 
         .reset-button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #74b9ff;
-            color: #74b9ff;
-            transform: translateY(-2px);
+            transform: scale(1.05) !important;
+            box-shadow: 0 20px 40px rgba(253, 121, 168, 0.4) !important;
         }
 
         .scanning-animation {
@@ -490,11 +490,8 @@
                         <select id="industry" required>
                             <option value="">Select Industry</option>
                             <option value="saas">SaaS & Technology</option>
-                            <option value="ecommerce">E-commerce</option>
-                            <option value="finance">Financial Services</option>
-                            <option value="healthcare">Healthcare</option>
-                            <option value="consulting">Consulting</option>
-                            <option value="manufacturing">Manufacturing</option>
+                            <option value="ecommerce">E-commerce & DTC</option>
+                            <option value="professional">Professional Services (Law, Accounting, Agencies)</option>
                         </select>
                     </div>
                     <div class="input-group">
@@ -552,7 +549,7 @@
                     </a>
                     <br>
                     <button class="reset-button" onclick="resetScanner()">
-                        🔄 NEW ANALYSIS
+                        NEW ANALYSIS
                     </button>
                 </div>
             </div>
@@ -609,28 +606,28 @@
                     "Cross-border e-commerce regulations simplified - international expansion easier"
                 ]
             },
-            finance: {
+            professional: {
                 metrics: {
-                    marketSize: "$520B",
-                    growth: "12%",
-                    competitors: 28000,
-                    avgDeal: "$125K",
-                    churnRate: "4.1%"
+                    marketSize: "$180B",
+                    growth: "15%",
+                    competitors: 89000,
+                    avgDeal: "$8.5K",
+                    churnRate: "12%"
                 },
                 competitors: [
-                    { name: "Traditional Bank", marketShare: 45, growth: 3, automation: 67, threat: "low" },
-                    { name: "Fintech Disruptor", marketShare: 8, growth: 89, automation: 95, threat: "critical" },
-                    { name: "Regional Player", marketShare: 18, growth: 15, automation: 78, threat: "medium" }
+                    { name: "Big Four Firm", marketShare: 28, growth: 8, automation: 72, threat: "high" },
+                    { name: "Regional Leader", marketShare: 15, growth: 22, automation: 56, threat: "medium" },
+                    { name: "Boutique Specialist", marketShare: 6, growth: 35, automation: 41, threat: "low" }
                 ],
                 threats: [
-                    "Regulatory changes favor large institutions - compliance costs rising",
-                    "Fintech companies raising $2.3B quarterly - heavy competition for talent",
-                    "Open banking APIs enabling new entrants to capture customer relationships"
+                    "AI-powered legal research tools reducing demand for junior staff by 25%",
+                    "Offshore accounting services offering 60% cost reduction to clients",
+                    "DIY platforms capturing 30% of small business legal and accounting work"
                 ],
                 opportunities: [
-                    "SMB lending still 67% manual - automation could capture significant share",
-                    "Crypto integration demanded by 34% of clients but only 8% offer it",
-                    "AI fraud detection reducing losses by 40% - competitive advantage for early adopters"
+                    "Only 40% of firms use practice management software - efficiency gains available",
+                    "Digital marketing adoption under 35% - massive client acquisition opportunity",
+                    "Subscription-based service models growing 45% YoY in professional services"
                 ]
             }
         };
